@@ -1,7 +1,8 @@
-'use strict';
+"use strict";
+
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Edits', {
+  up: async ( queryInterface, Sequelize ) => {
+    await queryInterface.createTable( "Edits", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,7 +14,8 @@ module.exports = {
       },
       current: {
         type: Sequelize.BOOLEAN,
-        allowNull: false
+        allowNull: false,
+        defaultValue: true
       },
       createdAt: {
         allowNull: false,
@@ -22,10 +24,19 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      articleId: {
+        type: Sequelize.INTEGER,
+        onDelete: "CASCADE",
+        references: {
+          model: "Articles",
+          key: "id",
+          as: "articleId"
+        }
       }
-    });
+    } );
   },
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Edits');
+  down: async ( queryInterface, Sequelize ) => {
+    await queryInterface.dropTable( "Edits" );
   }
 };
