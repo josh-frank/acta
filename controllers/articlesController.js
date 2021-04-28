@@ -1,33 +1,28 @@
 const Article = require( "../models" ).Article;
 const Edit = require( "../models" ).Edit;
 
-const articleSerializationOptions = {
+const getArticleSerializationOptions = {
     attributes: { exclude: [ "updatedAt" ] },
     include: [
         {
             model: Edit,
-            where: { current: true },
-            attributes: { exclude: [ "current", "articleId", "updatedAt" ] },
-            as: "currentEdit"
-        },
-        {
-            model: Edit,
-            where: { current: false },
-            attributes: { exclude: [ "current", "articleId", "updatedAt" ] },
-            as: "pastEdits"
+            attributes: { exclude: [ "articleId", "updatedAt" ] },
+            as: "edits"
         }
     ],
-    order: [ [ { model: Edit, as: "pastEdits" }, "createdAt", "DESC" ] ]
+    order: [ [ { model: Edit, as: "edits" }, "createdAt", "DESC" ] ]
 };
+
+const createArticleSerializationOptions = {};
 
 module.exports = {
     index( request, response ) {
-        return Article.findAll( articleSerializationOptions )
+        return Article.findAll( getArticleSerializationOptions )
             .then( allArticles => response.status( 201 ).send( allArticles ) )
             .catch( error => response.status( 400 ).send( error ) );
     },
     show( request, response ) {
-        return Article.findByPk( request.params.id, articleSerializationOptions )
+        return Article.findByPk( request.params.id, getArticleSerializationOptions )
             .then( article => response.status( 201 ).send( article ) )
             .catch( error => response.status( 400 ).send( error ) );
     },
