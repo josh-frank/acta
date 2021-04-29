@@ -1,7 +1,7 @@
 const Article = require( "../models" ).Article;
 const Edit = require( "../models" ).Edit;
 
-const getArticleSerializationOptions = {
+const articleSerializationOptions = {
     attributes: { exclude: [ "updatedAt" ] },
     include: [
         {
@@ -16,18 +16,14 @@ const getArticleSerializationOptions = {
     ]
 };
 
-const createArticleSerializationOptions = {
-    include: [ "edits" ]
-};
-
 module.exports = {
     index( request, response ) {
-        return Article.findAll( getArticleSerializationOptions )
+        return Article.findAll( articleSerializationOptions )
             .then( allArticles => response.status( 201 ).send( allArticles ) )
             .catch( error => response.status( 400 ).send( error ) );
     },
     show( request, response ) {
-        return Article.findByPk( request.params.id, getArticleSerializationOptions )
+        return Article.findByPk( request.params.id, articleSerializationOptions )
             .then( article => response.status( 201 ).send( article ) )
             .catch( error => response.status( 400 ).send( error ) );
     },
@@ -35,8 +31,15 @@ module.exports = {
         return Article.create( {
             title: request.body.title,
             edits: [ { content: request.body.content, current: true } ]
-        }, createArticleSerializationOptions )
+        }, { include: [ "edits" ] } )
             .then( newArticle => response.status( 201 ).send( newArticle ) )
+            .catch( error => response.status( 400 ).send( error ) );
+    },
+    async addEdit( request, response ) {
+        await Edit.update( { current: false }, { where: { articleId: request.params.id, current: true } } );
+        await Edit.create( { content: request.body.content, current: true, articleId: request.params.id } );
+        return Article.findByPk( request.params.id, articleSerializationOptions )
+            .then( article => response.status( 201 ).send( article ) )
             .catch( error => response.status( 400 ).send( error ) );
     }
 };
