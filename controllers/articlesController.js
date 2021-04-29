@@ -1,4 +1,5 @@
 const Article = require( "../models" ).Article;
+const User = require( "../models" ).User;
 const Edit = require( "../models" ).Edit;
 
 const articleSerializationOptions = {
@@ -6,8 +7,13 @@ const articleSerializationOptions = {
     include: [
         {
             model: Edit,
-            attributes: { exclude: [ "articleId", "updatedAt" ] },
-            as: "edits"
+            attributes: { exclude: [ "articleId", "userId", "updatedAt" ] },
+            as: "edits",
+            include: {
+                model: User,
+                attributes: { exclude: [ "password", "createdAt", "updatedAt" ] },
+                as: "user"
+            }
         }
     ],
     order: [

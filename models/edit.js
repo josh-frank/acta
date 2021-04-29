@@ -11,7 +11,7 @@ module.exports = ( sequelize, DataTypes ) => {
      */
     static associate( models ) {
       Edit.belongsTo( models.Article, { foreignKey: "articleId", onDelete: "CASCADE" } );
-      Edit.belongsTo( models.User, { foreignKey: "userId" } );
+      Edit.belongsTo( models.User, { foreignKey: "userId", as: "user" } );
     }
   };
   Edit.init( {
