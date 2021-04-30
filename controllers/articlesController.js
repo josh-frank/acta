@@ -22,30 +22,31 @@ const articleSerializationOptions = {
     ]
 };
 
-module.exports = {
-    index( request, response ) {
-        return Article.findAll( articleSerializationOptions )
-            .then( allArticles => response.status( 201 ).send( allArticles ) )
-            .catch( error => response.status( 400 ).send( error ) );
-    },
-    show( request, response ) {
-        return Article.findByPk( request.params.id, articleSerializationOptions )
-            .then( article => response.status( 201 ).send( article ) )
-            .catch( error => response.status( 400 ).send( error ) );
-    },
-    create( request, response ) {
-        return Article.create( {
-            title: request.body.title,
-            edits: [ { content: request.body.content, current: true } ]
-        }, { include: [ "edits" ] } )
-            .then( newArticle => response.status( 201 ).send( newArticle ) )
-            .catch( error => response.status( 400 ).send( error ) );
-    },
-    async addEdit( request, response ) {
-        await Edit.update( { current: false }, { where: { articleId: request.params.id, current: true } } );
-        await Edit.create( { content: request.body.content, current: true, articleId: request.params.id } );
-        return Article.findByPk( request.params.id, articleSerializationOptions )
-            .then( article => response.status( 201 ).send( article ) )
-            .catch( error => response.status( 400 ).send( error ) );
-    }
-};
+exports.index = ( request, response ) => {
+    return Article.findAll( articleSerializationOptions )
+        .then( allArticles => response.status( 200 ).send( allArticles ) )
+        .catch( error => response.status( 400 ).send( error ) );
+}
+
+exports.show = ( request, response ) => {
+    return Article.findByPk( request.params.id, articleSerializationOptions )
+        .then( article => response.status( 200 ).send( article ) )
+        .catch( error => response.status( 400 ).send( error ) );
+}
+
+exports.create = ( request, response ) => {
+    return Article.create( {
+        title: request.body.title,
+        edits: [ { content: request.body.content, current: true } ]
+    }, { include: [ "edits" ] } )
+        .then( newArticle => response.status( 201 ).send( newArticle ) )
+        .catch( error => response.status( 400 ).send( error ) );
+}
+
+exports.addEdit = async ( request, response ) => {
+    await Edit.update( { current: false }, { where: { articleId: request.params.id, current: true } } );
+    await Edit.create( { content: request.body.content, current: true, articleId: request.params.id } );
+    return Article.findByPk( request.params.id, articleSerializationOptions )
+        .then( article => response.status( 201 ).send( article ) )
+        .catch( error => response.status( 400 ).send( error ) );
+}
