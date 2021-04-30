@@ -37,7 +37,7 @@ exports.show = ( request, response ) => {
 exports.create = ( request, response ) => {
     return Article.create( {
         title: request.body.title,
-        edits: [ { content: request.body.content, current: true } ]
+        edits: [ { content: request.body.content, current: true, userId: request.userId } ]
     }, { include: [ "edits" ] } )
         .then( newArticle => response.status( 201 ).send( newArticle ) )
         .catch( error => response.status( 400 ).send( error ) );

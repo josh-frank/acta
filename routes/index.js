@@ -17,6 +17,6 @@ module.exports = app => {
     // Article routes //
     app.get( "/articles", articlesController.index );
     app.get( "/articles/:articleId", articlesController.show );
-    app.post( "/articles", articlesController.create );
+    app.post( "/articles", [ authJwt.verifyToken ], articlesController.create );
     app.patch( "/articles/:articleId", [ authJwt.verifyToken ], articlesController.addEdit );
 };
