@@ -29,7 +29,7 @@ exports.index = ( request, response ) => {
 }
 
 exports.show = ( request, response ) => {
-    return Article.findByPk( request.params.id, articleSerializationOptions )
+    return Article.findByPk( request.params.articleId, articleSerializationOptions )
         .then( article => response.status( 200 ).send( article ) )
         .catch( error => response.status( 400 ).send( error ) );
 }
@@ -44,9 +44,9 @@ exports.create = ( request, response ) => {
 }
 
 exports.addEdit = async ( request, response ) => {
-    await Edit.update( { current: false }, { where: { articleId: request.params.id, current: true } } );
-    await Edit.create( { content: request.body.content, current: true, articleId: request.params.id } );
-    return Article.findByPk( request.params.id, articleSerializationOptions )
+    await Edit.update( { current: false }, { where: { articleId: request.params.articleId, current: true } } );
+    await Edit.create( { content: request.body.content, current: true, articleId: request.params.articleId } );
+    return Article.findByPk( request.params.articleId, articleSerializationOptions )
         .then( article => response.status( 201 ).send( article ) )
         .catch( error => response.status( 400 ).send( error ) );
 }
