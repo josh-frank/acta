@@ -6,7 +6,7 @@ app.use( express.json() );
 app.use( express.urlencoded() );
 app.use( cors( { origin: `http://localhost:${ process.env.PORT }` } ) );
 
-require( "./routes" )( app );
+require( "./app/routes" )( app );
 
 // app.get( "/", ( request, response ) => response.send( "Test" ) );
 
