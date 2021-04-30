@@ -34,11 +34,13 @@ exports.show = ( request, response ) => {
         .catch( error => response.status( 400 ).send( error ) );
 }
 
-exports.create = ( request, response ) => {
-    return Article.create( {
+exports.create = async ( request, response ) => {
+    let newArticleId;
+    await Article.create( {
         title: request.body.title,
         edits: [ { content: request.body.content, current: true, userId: request.userId } ]
-    }, { include: [ "edits" ] } )
+    }, { include: [ "edits" ] } ).then( newArticle => newArticleId = newArticle.id );
+    return Article.findByPk( newArticleId, articleSerializationOptions )
         .then( newArticle => response.status( 201 ).send( newArticle ) )
         .catch( error => response.status( 400 ).send( error ) );
 }
