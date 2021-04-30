@@ -45,7 +45,7 @@ exports.create = ( request, response ) => {
 
 exports.addEdit = async ( request, response ) => {
     await Edit.update( { current: false }, { where: { articleId: request.params.articleId, current: true } } );
-    await Edit.create( { content: request.body.content, current: true, articleId: request.params.articleId } );
+    await Edit.create( { content: request.body.content, current: true, articleId: request.params.articleId, userId: request.userId } );
     return Article.findByPk( request.params.articleId, articleSerializationOptions )
         .then( article => response.status( 201 ).send( article ) )
         .catch( error => response.status( 400 ).send( error ) );

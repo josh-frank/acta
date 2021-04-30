@@ -1,4 +1,4 @@
-const { verifySignUp } = require( "../middleware" );
+const { authJwt, verifySignUp } = require( "../middleware" );
 const articlesController = require( "../controllers" ).articles;
 const authController = require( "../controllers" ).auth;
 const usersController = require( "../controllers" ).users;
@@ -18,5 +18,5 @@ module.exports = app => {
     app.get( "/articles", articlesController.index );
     app.get( "/articles/:articleId", articlesController.show );
     app.post( "/articles", articlesController.create );
-    app.patch( "/articles/:articleId", articlesController.addEdit );
+    app.patch( "/articles/:articleId", [ authJwt.verifyToken ], articlesController.addEdit );
 };
