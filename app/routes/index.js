@@ -14,6 +14,7 @@ module.exports = app => {
     app.post( "/signin", authController.signIn );
     // User routes //
     app.get( "/users/:userId", usersController.show );
+    app.patch( "/users/:userId", [ authJwt.verifyToken ], usersController.update );
     // Article routes //
     app.get( "/articles", articlesController.index );
     app.get( "/articles/:articleId", articlesController.show );
