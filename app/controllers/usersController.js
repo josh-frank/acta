@@ -30,6 +30,7 @@ exports.show = ( request, response ) => {
 }
 
 exports.update = async ( request, response ) => {
+    if ( parseInt( request.params.userId ) !== request.userId ) return response.status( 401 ).send( { error: "Unauthorized" } );
     let previousUserValues;
     await User.findByPk( request.params.userId ).then( user => previousUserValues = user );
     await User.update( {
